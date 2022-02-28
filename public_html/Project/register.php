@@ -32,7 +32,7 @@ if (isset($_POST["email"]) && isset($_POST["password"]) && isset($_POST["confirm
     $confirm = se($_POST, "confirm", "", false);
     $hasError = false;
     if (empty($email)) {
-        echo "Email must be set <br>";
+        flash("Email must be set <br>");
         $hasError = true;
     }
     //sanitize
@@ -40,42 +40,43 @@ if (isset($_POST["email"]) && isset($_POST["password"]) && isset($_POST["confirm
     $email = sanitize_email($email);
     //validate
     /*if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-         echo "Invalid email address";
+         flash("Invalid email address");
          $hasError = true;
      }*/
     if (!is_valid_email($email)) {
-        echo "Invalid email address";
+        flash("Invalid email address");
         $hasError = true;
     }
     if (empty($password)) {
-        echo "Password must be set <br>";
+        flash("Password must be set <br>");
         $hasError = true;
     }
     if (empty($confirm)) {
-        echo "Confirm must be set <br>";
+        flash("Confirm must be set <br>");
         $hasError = true;
     }
     if (strlen($password) < 8) {
-        echo "Password must have >= 8 characters<br>";
+        flash("Password must have >= 8 characters<br>");
         $hasError = true;
     }
     if (strlen($password) > 0 && $password !== $confirm) {
-        echo "Passwords must match <br>";
+        flash("Passwords must match <br>");
         $hasError = true;
     }
     if (!$hasError) {
-        echo "Welcome, $email";
+        flash("Welcome, $email");
         $hash = password_hash($password, PASSWORD_BCRYPT);
         $db = getDB();
         $stmt = $db->prepare("INSERT INTO Users (email, password) VALUES(:email, :password)");
         try {
             $stmt->execute([":email" => $email, ":password" => $hash]);
-            echo "Successfully registered!";
+            flash("Successfully registered!");
         } catch (Exception $e) {
-            echo "There was a problem registering";
-            echo "<pre>" . var_export($e, true) . "</pre>";
-            
+            flash("There was a problem registering");
+            flash("<pre>" . var_export($e, true) . "</pre>");
         }
     }
 }
 ?>
+<?php
+require(__DIR__ . "/../../partials/flash.php");
