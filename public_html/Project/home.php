@@ -8,11 +8,7 @@ require(__DIR__ . "/../../partials/nav.php");
 } else {
     flash("You're not logged in");
 }*/
-if (is_logged_in()) {
-    //flash("Welcome, " . get_user_email(");
-} else {
-    flash("You're not logged in");
-}
+is_logged_in(true);
 ?>
 <?php
 require(__DIR__ . "/../../partials/flash.php");
